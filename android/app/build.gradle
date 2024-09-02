@@ -54,7 +54,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "app.hiddify.com"
+        applicationId "com.vpn4tv.hiddify"
         minSdkVersion 21
         targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
@@ -67,7 +67,7 @@ android {
             enable true
             reset()
             //noinspection ChromeOsAbiSupport
-            include "x86_64", "armeabi-v7a", "arm64-v8a"
+            include "armeabi-v7a", "arm64-v8a"
 
             universalApk true
         }

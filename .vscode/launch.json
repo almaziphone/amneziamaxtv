@@ -12,7 +12,7 @@
             "buildFlags": "-tags with_clash_api,with_gvisor,with_quic,with_wireguard,with_grpc,with_ech,with_utls,with_reality_server"
         },
         {
-            "name": "Hiddify Dev",
+            "name": "VPN4TV Dev",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
@@ -21,21 +21,21 @@
             
         },
         {
-            "name": "Hiddify Dev Release",
+            "name": "VPN4TV Dev Release",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",
             "program": "lib/main.dart",
         },
         {
-            "name": "Hiddify Dev Profile",
+            "name": "VPN4TV Dev Profile",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",
             "program": "lib/main.dart",
         },
         {
-            "name": "Hiddify Prod",
+            "name": "VPN4TV Prod",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",

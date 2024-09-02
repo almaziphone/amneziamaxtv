@@ -12,7 +12,6 @@ import 'package:hiddify/core/router/router.dart';
 import 'package:hiddify/features/common/qr_code_scanner_screen.dart';
 import 'package:hiddify/features/config_option/data/config_option_repository.dart';
 import 'package:hiddify/features/config_option/notifier/warp_option_notifier.dart';
-
 import 'package:hiddify/features/config_option/overview/warp_options_widgets.dart';
 import 'package:hiddify/features/profile/notifier/profile_notifier.dart';
 import 'package:hiddify/utils/utils.dart';
@@ -46,13 +45,16 @@ class AddProfileModal extends HookConsumerWidget {
       },
     );
 
-    useMemoized(() async {
-      await Future.delayed(const Duration(milliseconds: 200));
-      if (url != null && context.mounted) {
-        if (addProfileState.isLoading) return;
-        ref.read(addProfileProvider.notifier).add(url!);
+    useEffect(() {
+      if (url != null) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!addProfileState.isLoading) {
+            ref.read(addProfileProvider.notifier).add(url!);
+          }
+        });
       }
-    });
+      return null;
+    }, [url]);
 
     final theme = Theme.of(context);
     const buttonsPadding = 24.0;
@@ -64,7 +66,6 @@ class AddProfileModal extends HookConsumerWidget {
         duration: const Duration(milliseconds: 250),
         child: LayoutBuilder(
           builder: (context, constraints) {
-            // temporary solution, aspect ratio widget relies on height and in a row there no height!
             final buttonWidth = constraints.maxWidth / 2 - (buttonsPadding + (buttonsGap / 2));
 
             return AnimatedCrossFade(
@@ -185,7 +186,7 @@ class AddProfileModal extends HookConsumerWidget {
                             ),
                           ),
                         ),
-                        if (!PlatformUtils.isDesktop) const SizedBox(height: 16), // Spacing between the buttons
+                        if (!PlatformUtils.isDesktop) const SizedBox(height: 16),
                         if (!PlatformUtils.isDesktop)
                           Semantics(
                             button: true,
@@ -264,20 +265,14 @@ class AddProfileModal extends HookConsumerWidget {
     await _warp.generateWarpConfig();
     toast?.start();
 
-    // final accountId = _prefs.getString("warp2-account-id");
-    // final accessToken = _prefs.getString("warp2-access-token");
-    // final hasWarp2Config = accountId != null && accessToken != null;
-
-    // if (!hasWarp2Config || true) {
     toast = notification.showInfoToast(t.profile.add.addingWarpMsg, duration: const Duration(milliseconds: 100));
     toast?.pause();
     await _warp.generateWarp2Config();
     toast?.start();
-    // }
     if (region == "cn") {
-      await _profile.add("#profile-title: Hiddify WARP\nwarp://p1@auto#National&&detour=warp://p2@auto#WoW"); //
+      await _profile.add("#profile-title: Hiddify WARP\nwarp://p1@auto#National&&detour=warp://p2@auto#WoW");
     } else {
-      await _profile.add("https://raw.githubusercontent.com/hiddify/hiddify-next/main/test.configs/warp"); //
+      await _profile.add("https://raw.githubusercontent.com/hiddify/hiddify-next/main/test.configs/warp");
     }
   }
 }

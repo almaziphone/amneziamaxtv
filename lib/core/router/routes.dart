@@ -16,6 +16,7 @@ import 'package:hiddify/features/proxy/overview/proxies_overview_page.dart';
 import 'package:hiddify/features/settings/about/about_page.dart';
 import 'package:hiddify/features/settings/overview/settings_overview_page.dart';
 import 'package:hiddify/utils/utils.dart';
+import 'package:hiddify/features/add_config/add_config_page.dart';
 
 part 'routes.g.dart';
 
@@ -30,6 +31,10 @@ GlobalKey<NavigatorState>? _dynamicRootKey = useMobileRouter ? rootNavigatorKey 
         TypedGoRoute<AddProfileRoute>(
           path: "add",
           name: AddProfileRoute.name,
+        ),
+        TypedGoRoute<AddConfigRoute>(
+          path: "add-config",
+          name: AddConfigRoute.name,
         ),
         TypedGoRoute<ProfilesOverviewRoute>(
           path: "profiles",
@@ -170,6 +175,22 @@ class HomeRoute extends GoRouteData {
     return const NoTransitionPage(
       name: name,
       child: HomePage(),
+    );
+  }
+}
+
+class AddConfigRoute extends GoRouteData {
+  const AddConfigRoute();
+  static const name = "Add Config";
+
+  static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
+
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) {
+    return MaterialPage(
+      fullscreenDialog: true,
+      name: name,
+      child: AddConfigPage(),
     );
   }
 }

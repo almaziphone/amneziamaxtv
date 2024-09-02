@@ -1,37 +1,97 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/gestures.dart';
+import 'package:hiddify/core/analytics/analytics_controller.dart';
+import 'package:hiddify/core/localization/locale_preferences.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
-import 'package:hiddify/core/analytics/analytics_controller.dart';
-import 'package:hiddify/core/http_client/dio_http_client.dart';
-import 'package:hiddify/core/localization/locale_preferences.dart';
 import 'package:hiddify/core/localization/translations.dart';
 import 'package:hiddify/core/model/constants.dart';
 import 'package:hiddify/core/model/region.dart';
 import 'package:hiddify/core/preferences/general_preferences.dart';
-import 'package:hiddify/features/common/general_pref_tiles.dart';
 import 'package:hiddify/features/config_option/data/config_option_repository.dart';
-import 'package:hiddify/gen/assets.gen.dart';
 import 'package:hiddify/utils/utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:sliver_tools/sliver_tools.dart';
-import 'package:timezone_to_country/timezone_to_country.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+import 'package:uuid/uuid.dart';
+import 'package:hiddify/features/connection/vpn_connection_manager.dart';
+import 'package:hiddify/features/profile/add/add_profile_modal.dart';
+import 'package:hiddify/gen/assets.gen.dart'; // Добавлен импорт для Assets
+import 'package:sliver_tools/sliver_tools.dart'; // Добавлен импорт для SliverCrossAxisConstrained и MultiSliver
 
-class IntroPage extends HookConsumerWidget with PresLogger {
+class IntroPage extends HookConsumerWidget {
   IntroPage({super.key});
 
-  bool locationInfoLoaded = false;
+  final String _uuid = Uuid().v4();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(translationsProvider);
 
     final isStarting = useState(false);
+    final vpnConfigs = useState<List<String>>([]);
+    final userInfo = useState<String?>(null);
+    final connectionManager = useState<VpnConnectionManager?>(null);
+    final status = useState<String>('Ожидание сканирования QR-кода');
+    final isVpnAdded = useState(false);
 
-    if (!locationInfoLoaded) {
-      autoSelectRegion(ref).then((value) => loggy.debug("Auto Region selection finished!"));
-      locationInfoLoaded = true;
-    }
+    useEffect(() {
+      Future<void> initializeSettings() async {
+        await ref.read(ConfigOptions.region.notifier).update(Region.ru);
+        await ref.read(localePreferencesProvider.notifier).changeLocale(AppLocale.ru);
+      }
+
+      initializeSettings();
+
+      return null;
+    }, []);
+
+    useEffect(() {
+      connectionManager.value = VpnConnectionManager(
+        uuid: _uuid,
+        onMessage: (dynamic message) async {
+          if (message['type'] == 'user_info') {
+            userInfo.value = 'Пользователь: ${message['data']['first_name']} ${message['data']['last_name']}';
+            status.value = 'Получена информация о пользователе';
+          } else if (message['type'] == 'vpn_config_processed') {
+            vpnConfigs.value = List<String>.from(message['config']);
+            status.value = 'Конфигурации VPN получены';
+
+            for (final config in vpnConfigs.value) {
+              await showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.transparent,
+                builder: (context) => AddProfileModal(url: config),
+              );
+            }
+
+            isVpnAdded.value = true;
+            status.value = 'VPN настроен';
+          }
+        },
+        onError: (error) {
+          print('Connection error: $error');
+          status.value = 'Ошибка соединения';
+        },
+      );
+
+      connectionManager.value!.connect();
+
+      return () {
+        connectionManager.value?.disconnect();
+      };
+    }, []);
+
+    useEffect(() {
+      if (isVpnAdded.value) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (!isStarting.value) {
+            isStarting.value = true;
+            ref.read(Preferences.introCompleted.notifier).update(true);
+          }
+        });
+      }
+    }, [isVpnAdded.value]);
 
     return Scaffold(
       body: SafeArea(
@@ -52,59 +112,76 @@ class IntroPage extends HookConsumerWidget with PresLogger {
               maxCrossAxisExtent: 368,
               child: MultiSliver(
                 children: [
-                  const LocalePrefTile(),
-                  const SliverGap(4),
-                  const RegionPrefTile(),
-                  const SliverGap(4),
-                  const EnableAnalyticsPrefTile(),
-                  const SliverGap(4),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text.rich(
-                      t.intro.termsAndPolicyCaution(
-                        tap: (text) => TextSpan(
-                          text: text,
-                          style: const TextStyle(color: Colors.blue),
-                          recognizer: TapGestureRecognizer()
-                            ..onTap = () async {
-                              await UriUtils.tryLaunch(
-                                Uri.parse(Constants.termsAndConditionsUrl),
-                              );
-                            },
-                        ),
+                  SliverToBoxAdapter(
+                    child: Center(
+                      child: QrImageView(
+                        data: 'https://t.me/VPN4TV_Bot?start=$_uuid',
+                        version: QrVersions.auto,
+                        size: 200.0,
                       ),
-                      style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 24,
+                  const SliverGap(20),
+                  SliverToBoxAdapter(
+                    child: Center(
+                      child: Text(status.value),
                     ),
-                    child: FilledButton(
-                      onPressed: () async {
-                        if (isStarting.value) return;
-                        isStarting.value = true;
-                        if (!ref.read(analyticsControllerProvider).requireValue) {
-                          loggy.info("disabling analytics per user request");
-                          try {
-                            await ref.read(analyticsControllerProvider.notifier).disableAnalytics();
-                          } catch (error, stackTrace) {
-                            loggy.error(
-                              "could not disable analytics",
-                              error,
-                              stackTrace,
-                            );
-                          }
-                        }
-                        await ref.read(Preferences.introCompleted.notifier).update(true);
-                      },
-                      child: isStarting.value
-                          ? LinearProgressIndicator(
-                              backgroundColor: Colors.transparent,
-                              color: Theme.of(context).colorScheme.onSurface,
-                            )
-                          : Text(t.intro.start),
+                  ),
+                  if (userInfo.value != null) ...[
+                    const SliverGap(20),
+                    SliverToBoxAdapter(
+                      child: Center(
+                        child: Text(userInfo.value!),
+                      ),
+                    ),
+                  ],
+                  const SliverGap(20),
+                  SliverToBoxAdapter(
+                    child: Center(
+                      child: Text('Пожалуйста, продолжите общение с ботом @VPN4TV_Bot в Telegram для успешной установки VPN.'),
+                    ),
+                  ),
+                  const SliverGap(20),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Text.rich(
+                        t.intro.termsAndPolicyCaution(
+                          tap: (text) => TextSpan(
+                            text: text,
+                            style: const TextStyle(color: Colors.blue),
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () async {
+                                await UriUtils.tryLaunch(
+                                  Uri.parse(Constants.termsAndConditionsUrl),
+                                );
+                              },
+                          ),
+                        ),
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
+                  ),
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 24,
+                      ),
+                      child: FilledButton(
+                        onPressed: isVpnAdded.value && !isStarting.value
+                            ? () {
+                                isStarting.value = true;
+                                ref.read(Preferences.introCompleted.notifier).update(true);
+                              }
+                            : null,
+                        child: isStarting.value
+                            ? LinearProgressIndicator(
+                                backgroundColor: Colors.transparent,
+                                color: Theme.of(context).colorScheme.onSurface,
+                              )
+                            : Text(isVpnAdded.value ? t.intro.start : 'Ожидание настройки VPN'),
+                      ),
                     ),
                   ),
                 ],
@@ -115,73 +192,4 @@ class IntroPage extends HookConsumerWidget with PresLogger {
       ),
     );
   }
-
-  Future<void> autoSelectRegion(WidgetRef ref) async {
-    try {
-      final countryCode = await TimeZoneToCountry.getLocalCountryCode();
-      final regionLocale = _getRegionLocale(countryCode);
-      loggy.debug(
-        'Timezone Region: ${regionLocale.region} Locale: ${regionLocale.locale}',
-      );
-      await ref.read(ConfigOptions.region.notifier).update(regionLocale.region);
-      await ref.watch(ConfigOptions.directDnsAddress.notifier).reset();
-      await ref.read(localePreferencesProvider.notifier).changeLocale(regionLocale.locale);
-      return;
-    } catch (e) {
-      loggy.warning(
-        'Could not get the local country code based on timezone',
-        e,
-      );
-    }
-
-    try {
-      final DioHttpClient client = DioHttpClient(
-        timeout: const Duration(seconds: 2),
-        userAgent: "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:123.0) Gecko/20100101 Firefox/123.0",
-        debug: true,
-      );
-      final response = await client.get<Map<String, dynamic>>('https://api.ip.sb/geoip/');
-
-      if (response.statusCode == 200) {
-        final jsonData = response.data!;
-        final regionLocale = _getRegionLocale(jsonData['country_code']?.toString() ?? "");
-
-        loggy.debug(
-          'Region: ${regionLocale.region} Locale: ${regionLocale.locale}',
-        );
-        await ref.read(ConfigOptions.region.notifier).update(regionLocale.region);
-        await ref.read(localePreferencesProvider.notifier).changeLocale(regionLocale.locale);
-      } else {
-        loggy.warning('Request failed with status: ${response.statusCode}');
-      }
-    } catch (e) {
-      loggy.warning('Could not get the local country code from ip');
-    }
-  }
-
-  RegionLocale _getRegionLocale(String country) {
-    switch (country.toUpperCase()) {
-      case "IR":
-        return RegionLocale(Region.ir, AppLocale.fa);
-      case "CN":
-        return RegionLocale(Region.cn, AppLocale.zhCn);
-      case "RU":
-        return RegionLocale(Region.ru, AppLocale.ru);
-      case "AF":
-        return RegionLocale(Region.af, AppLocale.fa);
-      case "BR":
-        return RegionLocale(Region.other, AppLocale.ptBr);
-      case "TR":
-        return RegionLocale(Region.other, AppLocale.tr);
-      default:
-        return RegionLocale(Region.other, AppLocale.en);
-    }
-  }
-}
-
-class RegionLocale {
-  final Region region;
-  final AppLocale locale;
-
-  RegionLocale(this.region, this.locale);
 }

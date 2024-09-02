@@ -1,6 +1,7 @@
 import 'package:dartx/dartx.dart';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hiddify/core/app_info/app_info_provider.dart';
 import 'package:hiddify/core/localization/translations.dart';
 import 'package:hiddify/core/model/failures.dart';
@@ -12,7 +13,6 @@ import 'package:hiddify/features/profile/notifier/active_profile_notifier.dart';
 import 'package:hiddify/features/profile/widget/profile_tile.dart';
 import 'package:hiddify/features/proxy/active/active_proxy_delay_indicator.dart';
 import 'package:hiddify/features/proxy/active/active_proxy_footer.dart';
-import 'package:hiddify/features/proxy/active/active_proxy_notifier.dart';
 import 'package:hiddify/utils/utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -67,13 +67,19 @@ class HomePage extends HookConsumerWidget {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            const Expanded(
+                            Expanded(
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  ConnectionButton(),
-                                  ActiveProxyDelayIndicator(),
+                                  const ConnectionButton(),
+                                  const ActiveProxyDelayIndicator(),
+                                  const SizedBox(height: 20),
+                                  ElevatedButton.icon(
+                                    onPressed: () => context.pushNamed(AddConfigRoute.name),
+                                    icon: const Icon(FluentIcons.add_24_regular),
+                                    label: const Text("Добавить новый профиль через Telegram"),
+                                  ),
                                 ],
                               ),
                             ),

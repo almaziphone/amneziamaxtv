@@ -11,12 +11,9 @@ import 'package:sentry_flutter/sentry_flutter.dart';
 part 'app_router.g.dart';
 
 bool _debugMobileRouter = false;
-
-final useMobileRouter =
-    !PlatformUtils.isDesktop || (kDebugMode && _debugMobileRouter);
+final useMobileRouter = !PlatformUtils.isDesktop || (kDebugMode && _debugMobileRouter);
 final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
 
-// TODO: test and improve handling of deep link
 @riverpod
 GoRouter router(RouterRef ref) {
   final notifier = ref.watch(routerListenableProvider.notifier);
@@ -28,6 +25,7 @@ GoRouter router(RouterRef ref) {
       }
     },
   );
+
   final initialLink = deepLink.read();
   String initialLocation = const HomeRoute().location;
   if (initialLink case AsyncData(value: final link?)) {
@@ -77,16 +75,13 @@ void switchTab(int index, BuildContext context) {
 }
 
 @riverpod
-class RouterListenable extends _$RouterListenable
-    with AppLogger
-    implements Listenable {
+class RouterListenable extends _$RouterListenable with AppLogger implements Listenable {
   VoidCallback? _routerListener;
   bool _introCompleted = false;
 
   @override
   Future<void> build() async {
     _introCompleted = ref.watch(Preferences.introCompleted);
-
     ref.listenSelf((_, __) {
       if (state.isLoading) return;
       loggy.debug("triggering listener");
@@ -94,18 +89,14 @@ class RouterListenable extends _$RouterListenable
     });
   }
 
-// ignore: avoid_build_context_in_providers
+  // ignore: avoid_build_context_in_providers
   String? redirect(BuildContext context, GoRouterState state) {
-    // if (this.state.isLoading || this.state.hasError) return null;
-
     final isIntro = state.uri.path == const IntroRoute().location;
-
     if (!_introCompleted) {
       return const IntroRoute().location;
     } else if (isIntro) {
       return const HomeRoute().location;
     }
-
     return null;
   }
 
