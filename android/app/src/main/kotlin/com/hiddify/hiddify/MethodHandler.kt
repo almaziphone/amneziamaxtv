@@ -25,7 +25,7 @@ class MethodHandler(private val scope: CoroutineScope) : FlutterPlugin,
         enum class Trigger(val method: String) {
             Setup("setup"),
             ParseConfig("parse_config"),
-            changeHiddifyOptions("change_hiddify_options"),
+            ChangeConfigOptions("change_config_options"),
             GenerateConfig("generate_config"),
             Start("start"),
             Stop("stop"),
@@ -73,7 +73,7 @@ class MethodHandler(private val scope: CoroutineScope) : FlutterPlugin,
                 }
             }
 
-            Trigger.changeHiddifyOptions.method -> {
+            Trigger.ChangeConfigOptions.method -> {
                 scope.launch {
                     result.runCatching {
                         val args = call.arguments as String
