@@ -13,9 +13,11 @@ import 'package:hiddify/features/profile/notifier/active_profile_notifier.dart';
 import 'package:hiddify/features/profile/widget/profile_tile.dart';
 import 'package:hiddify/features/proxy/active/active_proxy_delay_indicator.dart';
 import 'package:hiddify/features/proxy/active/active_proxy_footer.dart';
+import 'package:hiddify/providers/device_info_providers.dart'; // Import the provider
 import 'package:hiddify/utils/utils.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:sliver_tools/sliver_tools.dart';
+import 'package:gap/gap.dart';
 
 class HomePage extends HookConsumerWidget {
   const HomePage({super.key});
@@ -25,81 +27,110 @@ class HomePage extends HookConsumerWidget {
     final t = ref.watch(translationsProvider);
     final hasAnyProfile = ref.watch(hasAnyProfileProvider);
     final activeProfile = ref.watch(activeProfileProvider);
+    final isAndroidTvAsync = ref.watch(isAndroidTvProvider);
 
     return Scaffold(
-      body: Stack(
-        alignment: Alignment.bottomCenter,
-        children: [
-          CustomScrollView(
-            slivers: [
-              NestedAppBar(
-                title: Text.rich(
-                  TextSpan(
-                    children: [
-                      TextSpan(text: t.general.appTitle),
-                      const TextSpan(text: " "),
-                      const WidgetSpan(
-                        child: AppVersionLabel(),
-                        alignment: PlaceholderAlignment.middle,
-                      ),
-                    ],
-                  ),
-                ),
-                actions: [
-                  IconButton(
-                    onPressed: () => const QuickSettingsRoute().push(context),
-                    icon: const Icon(FluentIcons.options_24_filled),
-                    tooltip: t.config.quickSettings,
-                  ),
-                  IconButton(
-                    onPressed: () => const AddProfileRoute().push(context),
-                    icon: const Icon(FluentIcons.add_circle_24_filled),
-                    tooltip: t.profile.add.buttonText,
+      body: CustomScrollView(
+        slivers: [
+          NestedAppBar(
+            title: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(text: t.general.appTitle),
+                  const TextSpan(text: " "),
+                  const WidgetSpan(
+                    child: AppVersionLabel(),
+                    alignment: PlaceholderAlignment.middle,
                   ),
                 ],
               ),
-              switch (activeProfile) {
-                AsyncData(value: final profile?) => MultiSliver(
+            ),
+            actions: [
+              IconButton(
+                onPressed: () => const QuickSettingsRoute().push(context),
+                icon: const Icon(FluentIcons.options_24_filled),
+                tooltip: t.config.quickSettings,
+              ),
+              IconButton(
+                onPressed: () => const AddProfileRoute().push(context),
+                icon: const Icon(FluentIcons.add_circle_24_filled),
+                tooltip: t.profile.add.buttonText,
+              ),
+            ],
+          ),
+          // Main content
+          switch (activeProfile) {
+            AsyncData(value: final profile?) => MultiSliver(
+              children: [
+                ProfileTile(profile: profile, isMain: true),
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      ProfileTile(profile: profile, isMain: true),
-                      SliverFillRemaining(
-                        hasScrollBody: false,
+                      Expanded(
                         child: Column(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Expanded(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  const ConnectionButton(),
-                                  const ActiveProxyDelayIndicator(),
-                                  const SizedBox(height: 20),
-                                  ElevatedButton.icon(
-                                    onPressed: () => context.pushNamed(AddConfigRoute.name),
-                                    icon: const Icon(FluentIcons.add_24_regular),
-                                    label: const Text("Добавить новый профиль через Telegram"),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            if (MediaQuery.sizeOf(context).width < 840) const ActiveProxyFooter(),
+                            const ConnectionButton(),
+                            const ActiveProxyDelayIndicator(),
                           ],
                         ),
                       ),
+                      // Add the button here
+                      isAndroidTvAsync.when(
+                        data: (isAndroidTv) => Padding(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          child: isAndroidTv
+                              ? const AddProfileViaTelegramButton()
+                              : Column(
+                                  children: [
+                                    const AddProfileViaTelegramButton(),
+                                    const Gap(16),
+                                    OutlinedButton.icon(
+                                      onPressed: () => const AddProfileRoute().push(context),
+                                      icon: const Icon(FluentIcons.add_24_regular),
+                                      label: Text(t.profile.add.buttonText),
+                                    ),
+                                  ],
+                                ),
+                        ),
+                        loading: () => const SizedBox(),
+                        error: (error, stack) => const SizedBox(),
+                      ),
+                      if (MediaQuery.sizeOf(context).width < 840)
+                        const ActiveProxyFooter(),
                     ],
                   ),
-                AsyncData() => switch (hasAnyProfile) {
-                    AsyncData(value: true) => const EmptyActiveProfileHomeBody(),
-                    _ => const EmptyProfilesHomeBody(),
-                  },
-                AsyncError(:final error) => SliverErrorBodyPlaceholder(t.presentShortError(error)),
-                _ => const SliverToBoxAdapter(),
-              },
-            ],
-          ),
+                ),
+              ],
+            ),
+            AsyncData() => switch (hasAnyProfile) {
+              AsyncData(value: true) => const EmptyActiveProfileHomeBody(),
+              _ => const EmptyProfilesHomeBody(),
+            },
+            AsyncError(:final error) => SliverErrorBodyPlaceholder(
+              t.presentShortError(error),
+            ),
+            _ => const SliverToBoxAdapter(),
+          },
         ],
       ),
+    );
+  }
+}
+
+class AddProfileViaTelegramButton extends HookConsumerWidget {
+  const AddProfileViaTelegramButton({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = ref.watch(translationsProvider);
+    return ElevatedButton.icon(
+      onPressed: () => const AddConfigRoute().push(context),
+      icon: const Icon(FluentIcons.add_24_regular),
+      label: Text(t.home.addProfileViaTelegram),
     );
   }
 }

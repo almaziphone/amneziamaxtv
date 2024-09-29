@@ -15,8 +15,8 @@ import 'package:qr_flutter/qr_flutter.dart';
 import 'package:uuid/uuid.dart';
 import 'package:hiddify/features/connection/vpn_connection_manager.dart';
 import 'package:hiddify/features/profile/add/add_profile_modal.dart';
-import 'package:hiddify/gen/assets.gen.dart'; // Добавлен импорт для Assets
-import 'package:sliver_tools/sliver_tools.dart'; // Добавлен импорт для SliverCrossAxisConstrained и MultiSliver
+import 'package:hiddify/gen/assets.gen.dart'; // Added import for Assets
+import 'package:sliver_tools/sliver_tools.dart'; // Added import for SliverCrossAxisConstrained and MultiSliver
 
 class IntroPage extends HookConsumerWidget {
   IntroPage({super.key});
@@ -31,7 +31,7 @@ class IntroPage extends HookConsumerWidget {
     final vpnConfigs = useState<List<String>>([]);
     final userInfo = useState<String?>(null);
     final connectionManager = useState<VpnConnectionManager?>(null);
-    final status = useState<String>('Ожидание сканирования QR-кода');
+    final status = useState<String>(t.intro.waitingForQrScan);
     final isVpnAdded = useState(false);
 
     useEffect(() {
@@ -50,11 +50,14 @@ class IntroPage extends HookConsumerWidget {
         uuid: _uuid,
         onMessage: (dynamic message) async {
           if (message['type'] == 'user_info') {
-            userInfo.value = 'Пользователь: ${message['data']['first_name']} ${message['data']['last_name']}';
-            status.value = 'Получена информация о пользователе';
+            userInfo.value = t.intro.userInfo(
+              firstName: message['data']['first_name'],
+              lastName: message['data']['last_name'],
+            );
+            status.value = t.intro.userInfoReceived;
           } else if (message['type'] == 'vpn_config_processed') {
             vpnConfigs.value = List<String>.from(message['config']);
-            status.value = 'Конфигурации VPN получены';
+            status.value = t.intro.vpnConfigsReceived;
 
             for (final config in vpnConfigs.value) {
               await showModalBottomSheet(
@@ -66,12 +69,12 @@ class IntroPage extends HookConsumerWidget {
             }
 
             isVpnAdded.value = true;
-            status.value = 'VPN настроен';
+            status.value = t.intro.vpnSetupComplete;
           }
         },
         onError: (error) {
           print('Connection error: $error');
-          status.value = 'Ошибка соединения';
+          status.value = t.intro.connectionError;
         },
       );
 
@@ -138,7 +141,7 @@ class IntroPage extends HookConsumerWidget {
                   const SliverGap(20),
                   SliverToBoxAdapter(
                     child: Center(
-                      child: Text('Пожалуйста, продолжите общение с ботом @VPN4TV_Bot в Telegram для успешной установки VPN.'),
+                      child: Text(t.intro.continueWithBot),
                     ),
                   ),
                   const SliverGap(20),
@@ -168,19 +171,33 @@ class IntroPage extends HookConsumerWidget {
                         horizontal: 16,
                         vertical: 24,
                       ),
-                      child: FilledButton(
-                        onPressed: isVpnAdded.value && !isStarting.value
-                            ? () {
-                                isStarting.value = true;
-                                ref.read(Preferences.introCompleted.notifier).update(true);
-                              }
-                            : null,
-                        child: isStarting.value
-                            ? LinearProgressIndicator(
-                                backgroundColor: Colors.transparent,
-                                color: Theme.of(context).colorScheme.onSurface,
-                              )
-                            : Text(isVpnAdded.value ? t.intro.start : 'Ожидание настройки VPN'),
+                      child: Column(
+                        children: [
+                          FilledButton(
+                            onPressed: isVpnAdded.value && !isStarting.value
+                                ? () {
+                                    isStarting.value = true;
+                                    ref.read(Preferences.introCompleted.notifier).update(true);
+                                  }
+                                : null,
+                            child: isStarting.value
+                                ? LinearProgressIndicator(
+                                    backgroundColor: Colors.transparent,
+                                    color: Theme.of(context).colorScheme.onSurface,
+                                  )
+                                : Text(isVpnAdded.value ? t.intro.start : t.intro.waitingForVpnSetup),
+                          ),
+                          const SizedBox(height: 16),
+                          TextButton(
+                            onPressed: !isStarting.value
+                                ? () {
+                                    isStarting.value = true;
+                                    ref.read(Preferences.introCompleted.notifier).update(true);
+                                  }
+                                : null,
+                            child: Text(t.intro.addProfileLater),
+                          ),
+                        ],
                       ),
                     ),
                   ),
