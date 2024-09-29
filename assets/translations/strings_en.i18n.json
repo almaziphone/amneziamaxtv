@@ -26,12 +26,22 @@
   },
   "intro": {
     "termsAndPolicyCaution(rich)": "By Continuing You Agree With ${tap(@:about.termsAndConditions)}",
-    "start": "Start"
+    "start": "Start",
+    "waitingForQrScan": "Waiting for QR code scan",
+    "userInfo": "User: ${firstName} ${lastName}",
+    "userInfoReceived": "User information received",
+    "vpnConfigsReceived": "VPN configurations received",
+    "vpnSetupComplete": "VPN setup complete",
+    "connectionError": "Connection error",
+    "continueWithBot": "Please continue with the bot @VPN4TV_Bot in Telegram for successful VPN installation.",
+    "waitingForVpnSetup": "Waiting for VPN setup",
+    "addProfileLater": "Add profile later"
   },
   "home": {
     "pageTitle": "Home",
     "emptyProfilesMsg": "Begin by Adding a Subscription Profile",
-    "noActiveProfileMsg": "Choose a Profile"
+    "noActiveProfileMsg": "Choose a Profile",
+    "addProfileViaTelegram": "Add new profile via Telegram"
   },
   "stats": {
     "traffic": "Traffic",
@@ -311,9 +321,9 @@
     }
   },
   "play": {
-    "title": "VPN4TV (Preview)",
+    "title": "VPN4TV",
     "short_description": "Auto, SSH, VLESS, VMess, Trojan, Reality, Sing-Box, Clash, XRay, Shadowsocks",
-    "full_description": "The key goal of VPN4TV is to provide a secure, user-friendly and efficient tunneling client. It enables you to route all traffic or selected app traffic to a remote server of your choose, utilizing VPN-Service permission.\n\nNote: We do not provide any server; users are required to ensure their online activities stay private by using use their own self-hosted server or trusted servers. \n \nWe Support Servers With:\n- Normal V2Ray/XRay Subscription Link\n- Clash Subscription Link\n- Sing-Box Subscription Link\n\nWhat is our unique features?\n - User Friendly\n - Optimized and Fast\n - Automatically select LowestPing \n - Show user usage information\n - Easily import sublink by one click using deeplinking \n - Free and No ADS\n - Easily switch user sublinks\n - More and more\n\nSupport:\n- All Protocols Supported by Sing-Box \n- VLESS + XTLS Reality, Vision\n- VMess\n- Trojan\n- ShadowSocks\n- Reality\n- WireGuard\n- V2Ray\n- Hysteria2\n- TUICv5\n- SSH\n- ShadowTLS\n\n\nThe source code exist in https://github.com/hiddify/Hiddify-Next\nThe application core is based on open-source Sing-Box.\n\nPermission Description:\n- VPN Service: As the goal of this application is to provide a secure, user-friendly and efficient tunneling client, we need this permission to be able to route the traffic via tunnel to the remote server. \n- QUERY ALL PACKAGES: This permission is used to allow users to include or exclude specific applications for tunneling.\n- RECEIVE BOOT COMPLETED: This permission can be enabled or disabled from app settings to activate this application upon device boot.\n- POST NOTIFICATIONS: This permission is essential as we employ a foreground service to ensure the continuous operation of the VPN service.\n- This application is free from advertisements. The analytics and crash data only occurs with the explicit consent of the user in the first use of application."
+    "full_description": "The key goal of VPN4TV is to provide a secure, user-friendly and efficient tunneling client. It enables you to route all traffic or selected app traffic to a remote server of your choose, utilizing VPN-Service permission.\n\nNote: We do not provide any server; users are required to ensure their online activities stay private by using use their own self-hosted server or trusted servers. \n \nWe Support Servers With:\n- Normal V2Ray/XRay Subscription Link\n- Clash Subscription Link\n- Sing-Box Subscription Link\n\nWhat is our unique features?\n - User Friendly\n - Optimized and Fast\n - Automatically select LowestPing \n - Show user usage information\n - Easily import sublink by one click using deeplinking \n - Free and No ADS\n - Easily switch user sublinks\n - More and more\n\nSupport:\n- All Protocols Supported by Sing-Box \n- VLESS + XTLS Reality, Vision\n- VMess\n- Trojan\n- ShadowSocks\n- Reality\n- WireGuard\n- V2Ray\n- Hysteria2\n- TUICv5\n- SSH\n- ShadowTLS\n\n\nThe source code exist in https://github.com/a4e/vpn4tv_hiddify\nThe application core is based on open-source Sing-Box.\n\nPermission Description:\n- VPN Service: As the goal of this application is to provide a secure, user-friendly and efficient tunneling client, we need this permission to be able to route the traffic via tunnel to the remote server. \n- QUERY ALL PACKAGES: This permission is used to allow users to include or exclude specific applications for tunneling.\n- RECEIVE BOOT COMPLETED: This permission can be enabled or disabled from app settings to activate this application upon device boot.\n- POST NOTIFICATIONS: This permission is essential as we employ a foreground service to ensure the continuous operation of the VPN service.\n- This application is free from advertisements. The analytics and crash data only occurs with the explicit consent of the user in the first use of application."
   },
   "connection": {
     "tapToConnect": "Tap To Connect",

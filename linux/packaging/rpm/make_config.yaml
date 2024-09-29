@@ -1,9 +1,9 @@
-display_name: Hiddify
-url: https://github.com/hiddify/hiddify-next/
+display_name: VPN4§
+url: https://github.com/a4e/vpn4tv_hiddify
 license: Other
 
-packager: hiddify
-packagerEmail: linux@hiddify.com
+packager: vpn4tv
+packagerEmail: linux@vpn4tv.com
 
 priority: optional
 section: x11

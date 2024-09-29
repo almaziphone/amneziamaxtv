@@ -1,8 +1,8 @@
-display_name: Hiddify
-package_name: hiddify
+display_name: VPN4TV
+package_name: vpn4tv
 maintainer:
-  name: hiddify
-  email: linux@hiddify.com
+  name: vpn4tv
+  email: linux@vpn5tv.com
 
 priority: optional
 section: x11
@@ -11,7 +11,7 @@ essential: false
 icon: ./assets/images/source/ic_launcher_border.png
 
 postinstall_scripts:
-  - echo "Installed Hiddify"
+  - echo "Installed VPN4TV"
 postuninstall_scripts:
   - echo "Surprised Why?"
 
