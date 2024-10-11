@@ -65,7 +65,7 @@ Future<void> lazyBootstrap(
   if (enableAnalytics) {
     await _init(
       "analytics",
-      () => container.read(analyticsControllerProvider.notifier).enableAnalytics(),
+      () => container.read(analyticsControllerProvider.notifier).disableAnalytics(),
     );
   }
 

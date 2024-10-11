@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hiddify/bootstrap.dart';
 import 'package:hiddify/core/router/router.dart';
@@ -32,28 +33,122 @@ class NestedAppBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     RootScaffold.canShowDrawer(context);
-
     return SliverAppBar(
-      leading: (RootScaffold.stateKey.currentState?.hasDrawer ?? false) && showDrawerButton(context)
-          ? DrawerButton(
-              onPressed: () {
-                RootScaffold.stateKey.currentState?.openDrawer();
-              },
-            )
-          : (Navigator.of(context).canPop()
-              ? IconButton(
-                  icon: Icon(context.isRtl ? Icons.arrow_forward : Icons.arrow_back),
-                  padding: EdgeInsets.only(right: context.isRtl ? 50 : 0),
-                  onPressed: () {
-                    Navigator.of(context).pop(); // Pops the current route off the navigator stack
-                  },
-                )
-              : null),
+      leading: _buildLeadingButton(context),
       title: title,
-      actions: actions,
+      actions: _buildActions(context),
       pinned: pinned,
       forceElevated: forceElevated,
       bottom: bottom,
     );
+  }
+
+  Widget? _buildLeadingButton(BuildContext context) {
+    if ((RootScaffold.stateKey.currentState?.hasDrawer ?? false) && showDrawerButton(context)) {
+      return FocusableActionDetector(
+        actions: {
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              RootScaffold.stateKey.currentState?.openDrawer();
+              return null;
+            },
+          ),
+        },
+        child: Builder(
+          builder: (BuildContext context) {
+            final isFocused = Focus.of(context).hasFocus;
+            return DrawerButton(
+              onPressed: () {
+                RootScaffold.stateKey.currentState?.openDrawer();
+              },
+              style: ButtonStyle(
+                overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                  (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.focused)) {
+                      return Theme.of(context).colorScheme.primary.withOpacity(0.12);
+                    }
+                    return null;
+                  },
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    } else if (Navigator.of(context).canPop()) {
+      return FocusableActionDetector(
+        actions: {
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              Navigator.of(context).pop();
+              return null;
+            },
+          ),
+        },
+        child: Builder(
+          builder: (BuildContext context) {
+            final isFocused = Focus.of(context).hasFocus;
+            return IconButton(
+              icon: Icon(context.isRtl ? Icons.arrow_forward : Icons.arrow_back),
+              padding: EdgeInsets.only(right: context.isRtl ? 50 : 0),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: ButtonStyle(
+                overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                  (Set<MaterialState> states) {
+                    if (states.contains(MaterialState.focused)) {
+                      return Theme.of(context).colorScheme.primary.withOpacity(0.12);
+                    }
+                    return null;
+                  },
+                ),
+              ),
+            );
+          },
+        ),
+      );
+    }
+    return null;
+  }
+
+  List<Widget>? _buildActions(BuildContext context) {
+    if (actions == null) return null;
+    return actions!.map((action) {
+      return FocusableActionDetector(
+        actions: {
+          ActivateIntent: CallbackAction<ActivateIntent>(
+            onInvoke: (_) {
+              if (action is IconButton) {
+                action.onPressed?.call();
+              }
+              return null;
+            },
+          ),
+        },
+        child: Builder(
+          builder: (BuildContext context) {
+            final isFocused = Focus.of(context).hasFocus;
+            if (action is IconButton) {
+              return IconButton(
+                icon: action.icon,
+                onPressed: action.onPressed,
+                style: ButtonStyle(
+                  overlayColor: MaterialStateProperty.resolveWith<Color?>(
+                    (Set<MaterialState> states) {
+                      if (states.contains(MaterialState.focused)) {
+                        return Theme.of(context).colorScheme.primary.withOpacity(0.12);
+                      }
+                      return null;
+                    },
+                  ),
+                ),
+              );
+            }
+            return action;
+          },
+        ),
+      );
+    }).toList();
   }
 }

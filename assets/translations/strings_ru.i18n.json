@@ -1,7 +1,14 @@
 {
   "general": {
+    "ok": "ОК",
     "appTitle": "VPN4TV",
+    "about": "О программе",
+    "termsAndConditions": "Условия использования",
+    "privacyPolicy": "Политика конфиденциальности",
+    "errorOccurred": "Произошла ошибка",
+    "version": "Версия",
     "reset": "Сброс",
+    "menu": "Меню",
     "toggle": {
       "enabled": "Включено",
       "disabled": "Отключено"
@@ -27,21 +34,32 @@
   "intro": {
     "termsAndPolicyCaution(rich)": "Продолжая, вы соглашаетесь с ${tap(@:about.termsAndConditions)}",
     "start": "Начать",
-    "waitingForQrScan": "Ожидание сканирования QR-кода",
+    "waitingForQrScan": "Ожидание сканирования QR-кода или ввода 10-значного кода...",
     "userInfo": "Пользователь: ${firstName} ${lastName}",
     "userInfoReceived": "Получена информация о пользователе",
-    "vpnConfigsReceived": "Конфигурации VPN получены",
-    "vpnSetupComplete": "VPN настроен",
     "connectionError": "Ошибка соединения",
-    "continueWithBot": "Пожалуйста, продолжите общение с ботом @VPN4TV_Bot в Telegram для успешной установки VPN.",
+    "continueWithBot": "Пожалуйста, введите 10-значный код в @VPN4TV_bot или на https://api.vpn4tv.com, либо отсканируйте QR-код для завершения настройки VPN.",
     "waitingForVpnSetup": "Ожидание настройки VPN",
-    "addProfileLater": "Добавить профиль позже"
+    "addProfileLater": "Добавить профиль позже",
+    "scanQrCodePrompt": "Сканируйте QR-код, чтобы добавить профиль",
+    "setupInProgress": "Настройка в процессе",
+    "waitingForCodeInput": "Ожидание сканирования QR-кода или ввода 10-значного кода...",
+    "or": "ИЛИ",
+    "enter10DigitCode": "Введите 10-значный код",
+    "vpnConfigsReceived": "Получено ${count} VPN конфигураций",
+    "vpnConfigsAddedMsg": "${count} VPN конфигураций успешно добавлено",
+    "vpnSetupComplete": "Настройка VPN завершена"
   },
   "home": {
     "pageTitle": "Главная",
     "emptyProfilesMsg": "Начните с добавления профиля подписки",
     "noActiveProfileMsg": "Выберите профиль",
-    "addProfileViaTelegram": "Добавить профиль через Telegram"
+    "addProfileViaTelegram": "Добавить профиль через Telegram",
+    "noActiveProfile": "Нет активного профиля.",
+    "addNewProfile": "Добавить новый профиль",
+    "viewAllProfiles": "Список профилей",
+    "settings": "Настройки программы",
+    "perAppProxy": "Выбрать приложения для проксирования"
   },
   "stats": {
     "traffic": "Трафик",
@@ -55,9 +73,10 @@
   },
   "profile": {
     "overviewPageTitle": "Профили",
+    "overviewTitle": "Профили",
     "detailsPageTitle": "Профиль",
     "activeProfileNameSemanticLabel": "Имя активного профиля: «${name}».",
-    "activeProfileBtnSemanticLabel": "Посмотреть все профили",
+    "activeProfileBtnSemanticLabel": "Список профилей",
     "nonActiveProfileBtnSemanticLabel": "Выбрать «${name}» в качестве активного профиля",
     "subscription": {
       "traffic": "Трафик",
@@ -160,6 +179,7 @@
     }
   },
   "logs": {
+    "overview": "Обзор логов",
     "pageTitle": "Журналы",
     "filterHint": "Фильтр",
     "allLevelsFilter": "Все",
@@ -170,6 +190,7 @@
     "clearTooltip": "Очистить"
   },
   "settings": {
+    "overview": "Обзор настроек",
     "pageTitle": "Настройки",
     "requiresRestartMsg": "Чтобы изменения вступили в силу, перезапустите приложение.",
     "experimental": "Экспериментальные",
@@ -436,5 +457,8 @@
     "hide": "Скрыть",
     "close": "Закрыть",
     "alertMessage": "Скрыть или выйти из приложения?"
+  },
+  "configOptions": {
+    "overview": "Параметры профиля"
   }
 }

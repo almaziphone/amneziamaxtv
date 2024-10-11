@@ -25,7 +25,7 @@ class PerAppProxyPage extends HookConsumerWidget with PresLogger {
     final perAppProxyMode = ref.watch(Preferences.perAppProxyMode);
     final perAppProxyList = ref.watch(perAppProxyListProvider);
 
-    final showSystemApps = useState(true);
+    final showSystemApps = useState(false);
     final isSearching = useState(false);
     final searchQuery = useState("");
 
@@ -42,9 +42,7 @@ class PerAppProxyPage extends HookConsumerWidget with PresLogger {
             }
             if (!searchQuery.value.isBlank) {
               result = result.filter(
-                (e) => e.name
-                    .toLowerCase()
-                    .contains(searchQuery.value.toLowerCase()),
+                (e) => e.name.toLowerCase().contains(searchQuery.value.toLowerCase()),
               );
             }
             return result.toList();
@@ -65,11 +63,6 @@ class PerAppProxyPage extends HookConsumerWidget with PresLogger {
                   isDense: true,
                   filled: false,
                   border: InputBorder.none,
-                  focusedBorder: InputBorder.none,
-                  enabledBorder: InputBorder.none,
-                  errorBorder: InputBorder.none,
-                  focusedErrorBorder: InputBorder.none,
-                  disabledBorder: InputBorder.none,
                 ),
               ),
               leading: IconButton(
@@ -91,22 +84,24 @@ class PerAppProxyPage extends HookConsumerWidget with PresLogger {
                 ),
                 PopupMenuButton(
                   icon: Icon(AdaptiveIcon(context).more),
+                  onSelected: (value) {
+                    if (value == 'toggleSystemApps') {
+                      showSystemApps.value = !showSystemApps.value;
+                    } else if (value == 'clearSelection') {
+                      ref.read(perAppProxyListProvider.notifier).update([]);
+                    }
+                  },
                   itemBuilder: (context) {
                     return [
                       PopupMenuItem(
+                        value: 'toggleSystemApps',
                         child: Text(
-                          showSystemApps.value
-                              ? t.settings.network.hideSystemApps
-                              : t.settings.network.showSystemApps,
+                          showSystemApps.value ? t.settings.network.hideSystemApps : t.settings.network.showSystemApps,
                         ),
-                        onTap: () =>
-                            showSystemApps.value = !showSystemApps.value,
                       ),
                       PopupMenuItem(
+                        value: 'clearSelection',
                         child: Text(t.settings.network.clearSelection),
-                        onTap: () => ref
-                            .read(perAppProxyListProvider.notifier)
-                            .update([]),
                       ),
                     ];
                   },
@@ -115,23 +110,22 @@ class PerAppProxyPage extends HookConsumerWidget with PresLogger {
             ),
       body: CustomScrollView(
         slivers: [
-          SliverPinnedHeader(
+          // Используем SliverToBoxAdapter вместо SliverPinnedHeader
+          SliverToBoxAdapter(
             child: DecoratedBox(
               decoration: BoxDecoration(
                 color: Theme.of(context).scaffoldBackgroundColor,
               ),
               child: Column(
                 children: [
+                  // Используем кастомный виджет FocusableRadioListTile
                   ...PerAppProxyMode.values.map(
-                    (e) => RadioListTile<PerAppProxyMode>(
+                    (e) => FocusableRadioListTile<PerAppProxyMode>(
                       title: Text(e.present(t).message),
-                      dense: true,
                       value: e,
                       groupValue: perAppProxyMode,
                       onChanged: (value) async {
-                        await ref
-                            .read(Preferences.perAppProxyMode.notifier)
-                            .update(e);
+                        await ref.read(Preferences.perAppProxyMode.notifier).update(e);
                         if (e == PerAppProxyMode.off && context.mounted) {
                           context.pop();
                         }
@@ -143,62 +137,116 @@ class PerAppProxyPage extends HookConsumerWidget with PresLogger {
               ),
             ),
           ),
-          switch (filteredPackages) {
-            AsyncData(value: final packages) => SliverList.builder(
-                itemBuilder: (context, index) {
-                  final package = packages[index];
-                  final selected =
-                      perAppProxyList.contains(package.packageName);
-                  return CheckboxListTile(
-                    title: Text(
-                      package.name,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    subtitle: Text(
-                      package.packageName,
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                    value: selected,
-                    onChanged: (value) async {
-                      final List<String> newSelection;
-                      if (selected) {
-                        newSelection = perAppProxyList
-                            .exceptElement(package.packageName)
-                            .toList();
-                      } else {
-                        newSelection = [
-                          ...perAppProxyList,
-                          package.packageName,
-                        ];
-                      }
-                      await ref
-                          .read(perAppProxyListProvider.notifier)
-                          .update(newSelection);
-                    },
-                    secondary: SizedBox(
-                      width: 48,
-                      height: 48,
-                      child: ref
-                          .watch(packageIconProvider(package.packageName))
-                          .when(
-                            data: (data) => Image(image: data),
-                            error: (error, _) =>
-                                const Icon(FluentIcons.error_circle_24_regular),
-                            loading: () => const Center(
-                              child: CircularProgressIndicator(),
+          // Обрабатываем различные состояния AsyncValue
+          filteredPackages.when(
+            data: (packages) {
+              // Разделяем пакеты на выбранные и невыбранные, сохраняя исходный порядок
+              final selectedPackages = packages.where((package) => perAppProxyList.contains(package.packageName)).toList();
+              final unselectedPackages = packages.where((package) => !perAppProxyList.contains(package.packageName)).toList();
+              final reorderedPackages = [...selectedPackages, ...unselectedPackages];
+
+              return SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final package = reorderedPackages[index];
+                    final selected = perAppProxyList.contains(package.packageName);
+                    return CheckboxListTile(
+                      title: Text(
+                        package.name,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      subtitle: Text(
+                        package.packageName,
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                      value: selected,
+                      onChanged: (value) async {
+                        final List<String> newSelection;
+                        if (selected) {
+                          newSelection = perAppProxyList.where((item) => item != package.packageName).toList();
+                        } else {
+                          newSelection = [
+                            ...perAppProxyList,
+                            package.packageName,
+                          ];
+                        }
+                        await ref.read(perAppProxyListProvider.notifier).update(newSelection);
+                      },
+                      secondary: SizedBox(
+                        width: 48,
+                        height: 48,
+                        child: ref.watch(packageIconProvider(package.packageName)).when(
+                              data: (data) => Image(image: data),
+                              error: (error, _) => const Icon(FluentIcons.error_circle_24_regular),
+                              loading: () => const Center(
+                                child: CircularProgressIndicator(),
+                              ),
                             ),
-                          ),
-                    ),
-                  );
-                },
-                itemCount: packages.length,
-              ),
-            AsyncLoading() => const SliverLoadingBodyPlaceholder(),
-            AsyncError(:final error) =>
-              SliverErrorBodyPlaceholder(error.toString()),
-            _ => const SliverToBoxAdapter(),
-          },
+                      ),
+                    );
+                  },
+                  childCount: reorderedPackages.length,
+                ),
+              );
+            },
+            loading: () => const SliverLoadingBodyPlaceholder(),
+            error: (error, stackTrace) => SliverErrorBodyPlaceholder(error.toString()),
+          ),
         ],
+      ),
+    );
+  }
+}
+
+// Кастомный виджет для визуального выделения радио-кнопок при фокусе
+class FocusableRadioListTile<T> extends StatefulWidget {
+  final T value;
+  final T groupValue;
+  final ValueChanged<T?>? onChanged;
+  final Widget title;
+
+  const FocusableRadioListTile({
+    Key? key,
+    required this.value,
+    required this.groupValue,
+    this.onChanged,
+    required this.title,
+  }) : super(key: key);
+
+  @override
+  _FocusableRadioListTileState<T> createState() => _FocusableRadioListTileState<T>();
+}
+
+class _FocusableRadioListTileState<T> extends State<FocusableRadioListTile<T>> {
+  bool _isFocused = false;
+
+  @override
+  Widget build(BuildContext context) {
+    return Focus(
+      onFocusChange: (focused) {
+        setState(() {
+          _isFocused = focused;
+        });
+      },
+      child: GestureDetector(
+        onTap: () {
+          if (widget.onChanged != null) {
+            widget.onChanged!(widget.value);
+          }
+        },
+        child: Container(
+          decoration: BoxDecoration(
+            color: _isFocused ? Theme.of(context).focusColor : null,
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: RadioListTile<T>(
+            value: widget.value,
+            groupValue: widget.groupValue,
+            onChanged: widget.onChanged,
+            title: widget.title,
+            controlAffinity: ListTileControlAffinity.trailing,
+          ),
+        ),
       ),
     );
   }

@@ -4,7 +4,6 @@ import 'package:hiddify/core/router/app_router.dart';
 import 'package:hiddify/features/common/adaptive_root_scaffold.dart';
 import 'package:hiddify/features/config_option/overview/config_options_page.dart';
 import 'package:hiddify/features/config_option/widget/quick_settings_modal.dart';
-
 import 'package:hiddify/features/home/widget/home_page.dart';
 import 'package:hiddify/features/intro/widget/intro_page.dart';
 import 'package:hiddify/features/log/overview/logs_overview_page.dart';
@@ -17,6 +16,8 @@ import 'package:hiddify/features/settings/about/about_page.dart';
 import 'package:hiddify/features/settings/overview/settings_overview_page.dart';
 import 'package:hiddify/utils/utils.dart';
 import 'package:hiddify/features/add_config/add_config_page.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hiddify/providers/device_info_providers.dart';
 
 part 'routes.g.dart';
 
@@ -87,7 +88,22 @@ class MobileWrapperRoute extends ShellRouteData {
 
   @override
   Widget builder(BuildContext context, GoRouterState state, Widget navigator) {
-    return AdaptiveRootScaffold(navigator);
+    return Consumer(
+      builder: (context, ref, child) {
+        final isAndroidTvAsync = ref.watch(isAndroidTvProvider);
+        return isAndroidTvAsync.when(
+          data: (isAndroidTv) {
+            if (isAndroidTv) {
+              return navigator;
+            } else {
+              return AdaptiveRootScaffold(navigator);
+            }
+          },
+          loading: () => const CircularProgressIndicator(),
+          error: (_, __) => AdaptiveRootScaffold(navigator),
+        );
+      },
+    );
   }
 }
 

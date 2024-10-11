@@ -1,7 +1,14 @@
 {
   "general": {
+    "ok": "OK",
     "appTitle": "VPN4TV",
+    "about": "About",
+    "termsAndConditions": "Terms and Conditions",
+    "privacyPolicy": "Privacy Policy",
+    "errorOccurred": "An error occurred",
+    "version": "Version",
     "reset": "Reset",
+    "menu": "Menu",
     "toggle": {
       "enabled": "Enabled",
       "disabled": "Disabled"
@@ -25,23 +32,34 @@
     "grantPermission": "Grant Permission"
   },
   "intro": {
-    "termsAndPolicyCaution(rich)": "By Continuing You Agree With ${tap(@:about.termsAndConditions)}",
+    "termsAndPolicyCaution(rich)": "By continuing, you agree to the ${tap(@:about.termsAndConditions)}",
     "start": "Start",
-    "waitingForQrScan": "Waiting for QR code scan",
+    "waitingForQrScan": "Waiting for QR code scan or code input",
     "userInfo": "User: ${firstName} ${lastName}",
     "userInfoReceived": "User information received",
-    "vpnConfigsReceived": "VPN configurations received",
-    "vpnSetupComplete": "VPN setup complete",
     "connectionError": "Connection error",
-    "continueWithBot": "Please continue with the bot @VPN4TV_Bot in Telegram for successful VPN installation.",
+    "continueWithBot": "Please enter the 10-digit code in @VPN4TV_bot or https://api.vpn4tv.com the QR code to complete the VPN setup.",
     "waitingForVpnSetup": "Waiting for VPN setup",
-    "addProfileLater": "Add profile later"
+    "addProfileLater": "Add profile later",
+    "scanQrCodePrompt": "Scan the QR code to add a profile",
+    "setupInProgress": "Setup in progress",
+    "waitingForCodeInput": "Waiting for QR code scan or code input",
+    "or": "OR",
+    "enter10DigitCode": "Enter the 10-digit code",
+    "vpnConfigsReceived": "Received ${count} VPN configurations",
+    "vpnConfigsAddedMsg": "${count} VPN configurations have been added successfully",
+    "vpnSetupComplete": "VPN Setup Complete"
   },
   "home": {
     "pageTitle": "Home",
     "emptyProfilesMsg": "Begin by Adding a Subscription Profile",
     "noActiveProfileMsg": "Choose a Profile",
-    "addProfileViaTelegram": "Add new profile via Telegram"
+    "addProfileViaTelegram": "Add new profile via Telegram",
+    "noActiveProfile": "No active profile.",
+    "addNewProfile": "Add New Profile",
+    "viewAllProfiles": "View All Profiles",
+    "settings": "Settings",
+    "perAppProxy": "Per-App Proxy"
   },
   "stats": {
     "traffic": "Traffic",
@@ -55,6 +73,7 @@
   },
   "profile": {
     "overviewPageTitle": "Profiles",
+    "overviewTitle": "Profiles",
     "detailsPageTitle": "Profile",
     "activeProfileNameSemanticLabel": "Active Profile Name: \"${name}\".",
     "activeProfileBtnSemanticLabel": "View All Profiles",
@@ -160,6 +179,7 @@
     }
   },
   "logs": {
+    "overview": "Logs Overview",
     "pageTitle": "Logs",
     "filterHint": "Filter",
     "allLevelsFilter": "All",
@@ -171,6 +191,7 @@
   },
   "settings": {
     "pageTitle": "Settings",
+    "overview": "Settings Overview",
     "requiresRestartMsg": "For this to take effect restart the app",
     "experimental": "Experimental",
     "experimentalMsg": "Features with Experimental flag are still in development and might cause issues.",
@@ -179,6 +200,7 @@
     "importOptions": "Import Options From Clipboard",
     "importOptionsMsg": "This will rewrite all config options with provided values. Are you sure?",
     "general": {
+      "ok": "OK",
       "sectionTitle": "General",
       "locale": "Language",
       "region": "Region",
@@ -436,5 +458,8 @@
     "hide": "Hide",
     "close": "Exit",
     "alertMessage": "Hide or Exit the application?"
+  },
+  "configOptions": {
+    "overview": "Config Options Overview"
   }
 }

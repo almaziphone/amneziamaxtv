@@ -3,6 +3,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:hiddify/core/localization/translations.dart';
+import 'package:hiddify/core/router/router.dart';
 import 'package:hiddify/core/widget/animated_visibility.dart';
 import 'package:hiddify/core/widget/shimmer_skeleton.dart';
 import 'package:hiddify/features/proxy/active/active_proxy_notifier.dart';
@@ -37,10 +38,12 @@ class ActiveProxyFooter extends HookConsumerWidget {
                     children: [
                       _InfoProp(
                         icon: FluentIcons.arrow_routing_20_regular,
-                        text: proxy.selectedName.isNotNullOrBlank
-                            ? proxy.selectedName!
-                            : proxy.name,
+                        text: proxy.selectedName.isNotNullOrBlank ? proxy.selectedName! : proxy.name,
                         semanticLabel: t.proxies.activeProxySemanticLabel,
+                        onTap: () {
+                          // Переходим к экрану выбора прокси
+                          const ProxiesRoute().push(context);
+                        },
                       ),
                       const Gap(8),
                       switch (ipInfo) {
@@ -51,9 +54,7 @@ class ActiveProxyFooter extends HookConsumerWidget {
                               IPText(
                                 ip: info.ip,
                                 onLongPress: () async {
-                                  ref
-                                      .read(ipInfoNotifierProvider.notifier)
-                                      .refresh();
+                                  ref.read(ipInfoNotifierProvider.notifier).refresh();
                                 },
                               ),
                             ],
@@ -65,9 +66,7 @@ class ActiveProxyFooter extends HookConsumerWidget {
                               UnknownIPText(
                                 text: t.proxies.checkIp,
                                 onTap: () async {
-                                  ref
-                                      .read(ipInfoNotifierProvider.notifier)
-                                      .refresh();
+                                  ref.read(ipInfoNotifierProvider.notifier).refresh();
                                 },
                               ),
                             ],
@@ -79,9 +78,7 @@ class ActiveProxyFooter extends HookConsumerWidget {
                               UnknownIPText(
                                 text: t.proxies.unknownIp,
                                 onTap: () async {
-                                  ref
-                                      .read(ipInfoNotifierProvider.notifier)
-                                      .refresh();
+                                  ref.read(ipInfoNotifierProvider.notifier).refresh();
                                 },
                               ),
                             ],
@@ -121,8 +118,7 @@ class _StatsColumn extends HookConsumerWidget {
     final stats = ref.watch(statsNotifierProvider).value;
 
     return Directionality(
-      textDirection: TextDirection.values[
-          (Directionality.of(context).index + 1) % TextDirection.values.length],
+      textDirection: TextDirection.values[(Directionality.of(context).index + 1) % TextDirection.values.length],
       child: Flexible(
         child: Column(
           children: [
@@ -149,16 +145,19 @@ class _InfoProp extends StatelessWidget {
     required this.icon,
     required this.text,
     this.semanticLabel,
+    this.onTap,
   });
 
   final IconData icon;
   final String text;
   final String? semanticLabel;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
-    return Semantics(
+    Widget content = Semantics(
       label: semanticLabel,
+      button: onTap != null,
       child: Row(
         children: [
           Icon(icon),
@@ -166,15 +165,27 @@ class _InfoProp extends StatelessWidget {
           Flexible(
             child: Text(
               text,
-              style: Theme.of(context)
-                  .textTheme
-                  .labelMedium
-                  ?.copyWith(fontFamily: FontFamily.emoji),
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(fontFamily: FontFamily.emoji),
               overflow: TextOverflow.ellipsis,
             ),
           ),
         ],
       ),
     );
+
+    if (onTap != null) {
+      return FocusableActionDetector(
+        // Позволяет виджету получать фокус
+        child: InkWell(
+          onTap: onTap,
+          child: content,
+          focusColor: Theme.of(context).focusColor,
+          hoverColor: Theme.of(context).hoverColor,
+          splashColor: Theme.of(context).splashColor,
+        ),
+      );
+    } else {
+      return content;
+    }
   }
 }
