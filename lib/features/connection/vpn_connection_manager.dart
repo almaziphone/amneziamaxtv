@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class VpnConnectionManager {
-  final String baseUrl = 'https://almaz.vip/api/tv';
+  final String baseUrl = 'https://51mvq399-3000.euw.devtunnels.ms/api/tv';
   final String uuid;
   final void Function(dynamic) onMessage;
   final void Function(dynamic) onError;
