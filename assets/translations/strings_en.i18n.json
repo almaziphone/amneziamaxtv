@@ -38,7 +38,7 @@
     "userInfo": "User: ${firstName} ${lastName}",
     "userInfoReceived": "User information received",
     "connectionError": "Connection error",
-    "continueWithBot": "Please enter the 10-digit code in @amneziamax_bot or https://almaz.vip/api/tv the QR code to complete the VPN setup.",
+    "continueWithBot": "Please enter the 10-digit code in @amneziamaxbot or https://almaz.vip/api/tv the QR code to complete the VPN setup.",
     "waitingForVpnSetup": "Waiting for VPN setup",
     "addProfileLater": "Add profile later",
     "scanQrCodePrompt": "Scan the QR code to add a profile",
