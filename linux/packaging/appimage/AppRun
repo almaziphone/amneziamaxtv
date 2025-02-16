@@ -24,7 +24,7 @@ OPTIND=1
 
 # if no arg is provided, execute hiddify app
 if [[ $# == 0 ]];then 
-    exec ./vpn4tv
+    exec ./amneziamax
 else
 
 # processing arguments

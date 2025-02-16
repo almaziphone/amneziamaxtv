@@ -8,6 +8,6 @@
         <intent
             android:action="android.intent.action.MAIN"
             android:targetClass="com.hiddify.hiddify.ShortcutActivity"
-            android:targetPackage="com.vpn4tv.hiddify" />
+            android:targetPackage="com.amneziamax.hiddify" />
     </shortcut>
 </shortcuts>

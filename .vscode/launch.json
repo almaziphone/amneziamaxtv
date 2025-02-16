@@ -12,7 +12,7 @@
             "buildFlags": "-tags with_clash_api,with_gvisor,with_quic,with_wireguard,with_grpc,with_ech,with_utls,with_reality_server"
         },
         {
-            "name": "VPN4TV Dev",
+            "name": "amneziamax Dev",
             "request": "launch",
             "type": "dart",
             "flutterMode": "debug",
@@ -21,21 +21,21 @@
             
         },
         {
-            "name": "VPN4TV Dev Release",
+            "name": "amneziamax Dev Release",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",
             "program": "lib/main.dart",
         },
         {
-            "name": "VPN4TV Dev Profile",
+            "name": "amneziamax Dev Profile",
             "request": "launch",
             "type": "dart",
             "flutterMode": "profile",
             "program": "lib/main.dart",
         },
         {
-            "name": "VPN4TV Prod",
+            "name": "amneziamax Prod",
             "request": "launch",
             "type": "dart",
             "flutterMode": "release",
@@ -48,7 +48,7 @@
             "program": "lib/main.dart",
             "args": [
                 "--app-id",
-                "com.vpn4tv.hiddify",
+                "com.amneziamax.hiddify",
             ],
             "deviceId": "designed-for-ipad",
         }

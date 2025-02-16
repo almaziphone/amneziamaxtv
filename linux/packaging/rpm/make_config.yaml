@@ -1,9 +1,9 @@
 display_name: VPN4§
-url: https://github.com/a4e/vpn4tv_hiddify
+url: https://github.com/almaziphone/amneziamaxtv
 license: Other
 
-packager: vpn4tv
-packagerEmail: linux@vpn4tv.com
+packager: amneziamax
+packagerEmail: linux@amneziamax.com
 
 priority: optional
 section: x11

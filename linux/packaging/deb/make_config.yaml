@@ -1,7 +1,7 @@
-display_name: VPN4TV
-package_name: vpn4tv
+display_name: amneziamax
+package_name: amneziamax
 maintainer:
-  name: vpn4tv
+  name: amneziamax
   email: linux@vpn5tv.com
 
 priority: optional
@@ -11,7 +11,7 @@ essential: false
 icon: ./assets/images/source/ic_launcher_border.png
 
 postinstall_scripts:
-  - echo "Installed VPN4TV"
+  - echo "Installed amneziamax"
 postuninstall_scripts:
   - echo "Surprised Why?"
 

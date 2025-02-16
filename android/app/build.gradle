@@ -54,7 +54,7 @@ android {
     }
 
     defaultConfig {
-        applicationId "com.vpn4tv.hiddify"
+        applicationId "com.amneziamax.hiddify"
         minSdkVersion 21
         targetSdkVersion 34
         versionCode flutterVersionCode.toInteger()
