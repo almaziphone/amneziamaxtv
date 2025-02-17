@@ -28,7 +28,7 @@
         android:name=".Application"
         android:banner="@mipmap/tv_banner"
         android:icon="@mipmap/ic_launcher"
-        android:label="amneziamax"
+        android:label="AmneziaMax"
         android:roundIcon="@mipmap/ic_launcher"
         tools:targetApi="31">
 
