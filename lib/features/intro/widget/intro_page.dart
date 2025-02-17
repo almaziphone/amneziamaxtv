@@ -218,6 +218,7 @@ class IntroPage extends HookConsumerWidget {
                     child: QrImageView(
                       // data: 'https://t.me/amneziamaxbot?start=$_uuid',
                       data: 'https://t.me/amneziarusbot?start=tv_${code10Digit.value}',
+                      // data: 'https://t.me/amneziamaxbot?start=tv_${code10Digit.value}',
                       version: QrVersions.auto,
                       size: 200.0,
                       foregroundColor: isDarkTheme ? Colors.white : Colors.black,
