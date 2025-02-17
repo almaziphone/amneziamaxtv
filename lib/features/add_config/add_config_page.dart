@@ -72,47 +72,48 @@ class AddConfigPage extends HookConsumerWidget {
       Navigator.of(context).pop();
     }
 
-    useEffect(() {
-      connectionManagerUuid.value = VpnConnectionManager(
-        uuid: _uuid,
-        onMessage: (dynamic message) async {
-          if (message['type'] == 'user_info') {
-            userInfo.value = t.intro.userInfo(
-              firstName: message['data']['first_name'],
-              lastName: message['data']['last_name'],
-            );
-            updateCombinedStatus();
-          } else if (message['type'] == 'vpn_config_processed') {
-            final configs = message['config'] as List<dynamic>;
-            vpnConfigs.value = configs;
-            updateCombinedStatus();
-            await processConfigs(configs);
-          }
-        },
-        onError: (error) {
-          print('Connection error UUID: $error');
-          combinedStatus.value = '${t.intro.connectionError}: $error\n${combinedStatus.value.split('\n').last}';
-        },
-      );
+    // useEffect(() {
+    //   connectionManagerUuid.value = VpnConnectionManager(
+    //     uuid: _uuid,
+    //     onMessage: (dynamic message) async {
+    //       if (message['type'] == 'user_info') {
+    //         userInfo.value = t.intro.userInfo(
+    //           firstName: message['data']['first_name'],
+    //           lastName: message['data']['last_name'],
+    //         );
+    //         updateCombinedStatus();
+    //       } else if (message['type'] == 'vpn_config_processed') {
+    //         final configs = message['config'] as List<dynamic>;
+    //         vpnConfigs.value = configs;
+    //         updateCombinedStatus();
+    //         await processConfigs(configs);
+    //       }
+    //     },
+    //     onError: (error) {
+    //       print('Connection error UUID: $error');
+    //       combinedStatus.value = '${t.intro.connectionError}: $error\n${combinedStatus.value.split('\n').last}';
+    //     },
+    //   );
 
-      connectionManagerUuid.value!.connect();
+    //   connectionManagerUuid.value!.connect();
 
-      return () {
-        connectionManagerUuid.value?.disconnect();
-      };
-    }, []);
+    //   return () {
+    //     connectionManagerUuid.value?.disconnect();
+    //   };
+    // }, []);
 
     useEffect(() {
       connectionManagerCode.value = VpnConnectionManager(
         uuid: code10Digit.value,
         onMessage: (dynamic message) async {
-          if (message['type'] == 'user_info') {
-            userInfo.value = t.intro.userInfo(
-              firstName: message['data']['first_name'],
-              lastName: message['data']['last_name'],
-            );
-            updateCombinedStatus();
-          } else if (message['type'] == 'vpn_config_processed') {
+          // if (message['type'] == 'user_info') {
+          //   userInfo.value = t.intro.userInfo(
+          //     firstName: message['data']['first_name'],
+          //     lastName: message['data']['last_name'],
+          //   );
+          //   updateCombinedStatus();
+          // } else 
+          if (message['type'] == 'vpn_config_processed') {
             final configs = message['config'] as List<dynamic>;
             vpnConfigs.value = configs;
             updateCombinedStatus();
@@ -146,7 +147,8 @@ class AddConfigPage extends HookConsumerWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 QrImageView(
-                  data: 'https://t.me/amneziamaxbot?start=$_uuid',
+                  // data: 'https://t.me/amneziamaxbot?start=$_uuid',
+                  data: 'https://t.me/amneziarusbot?start=tv_${code10Digit.value}',
                   version: QrVersions.auto,
                   size: 200.0,
                   foregroundColor: isDarkTheme ? Colors.white : Colors.black,

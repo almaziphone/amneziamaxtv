@@ -91,15 +91,17 @@ class IntroPage extends HookConsumerWidget {
 
     useEffect(() {
       connectionManagerUuid.value = VpnConnectionManager(
-        uuid: _uuid,
+        // uuid: _uuid,
+        uuid: code10Digit.value,
         onMessage: (dynamic message) async {
-          if (message['type'] == 'user_info') {
-            userInfo.value = t.intro.userInfo(
-              firstName: message['data']['first_name'],
-              lastName: message['data']['last_name'],
-            );
-            updateCombinedStatus();
-          } else if (message['type'] == 'vpn_config_processed') {
+          // if (message['type'] == 'user_info') {
+          //   userInfo.value = t.intro.userInfo(
+          //     firstName: message['data']['first_name'],
+          //     lastName: message['data']['last_name'],
+          //   );
+          //   updateCombinedStatus();
+          // } else 
+          if (message['type'] == 'vpn_config_processed') {
             final configs = message['config'] as List<dynamic>;
             vpnConfigs.value = configs;
             updateCombinedStatus();
@@ -123,13 +125,14 @@ class IntroPage extends HookConsumerWidget {
       connectionManagerCode.value = VpnConnectionManager(
         uuid: code10Digit.value,
         onMessage: (dynamic message) async {
-          if (message['type'] == 'user_info') {
-            userInfo.value = t.intro.userInfo(
-              firstName: message['data']['first_name'],
-              lastName: message['data']['last_name'],
-            );
-            updateCombinedStatus();
-          } else if (message['type'] == 'vpn_config_processed') {
+          // if (message['type'] == 'user_info') {
+          //   userInfo.value = t.intro.userInfo(
+          //     firstName: message['data']['first_name'],
+          //     lastName: message['data']['last_name'],
+          //   );
+          //   updateCombinedStatus();
+          // } else
+          if (message['type'] == 'vpn_config_processed') {
             final configs = message['config'] as List<dynamic>;
             vpnConfigs.value = configs;
             updateCombinedStatus();
@@ -213,7 +216,8 @@ class IntroPage extends HookConsumerWidget {
                 children: [
                   Center(
                     child: QrImageView(
-                      data: 'https://t.me/amneziamaxbot?start=$_uuid',
+                      // data: 'https://t.me/amneziamaxbot?start=$_uuid',
+                      data: 'https://t.me/amneziarusbot?start=tv_${code10Digit.value}',
                       version: QrVersions.auto,
                       size: 200.0,
                       foregroundColor: isDarkTheme ? Colors.white : Colors.black,

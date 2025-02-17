@@ -19,6 +19,7 @@ class VpnConnectionManager {
     this.pollingInterval = const Duration(seconds: 30),
   });
 
+
   void connect() {
     _isConnected = true;
     _startPolling();
