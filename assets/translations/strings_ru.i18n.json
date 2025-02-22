@@ -43,9 +43,9 @@
     "addProfileLater": "Добавить профиль позже",
     "scanQrCodePrompt": "Сканируйте QR-код, чтобы добавить профиль",
     "setupInProgress": "Настройка в процессе",
-    "waitingForCodeInput": "Ожидание сканирования QR-кода или ввода 10-значного кода...",
-    "or": "ИЛИ",
-    "enter10DigitCode": "Введите 10-значный код",
+    "waitingForCodeInput": "Ожидание сканирования QR-кода ...",
+    "or": "@AmneziaMaxBot",
+    "enter10DigitCode": "Ждите получения пописки",
     "vpnConfigsReceived": "Получено ${count} VPN конфигураций",
     "vpnConfigsAddedMsg": "${count} VPN конфигураций успешно добавлено",
     "vpnSetupComplete": "Настройка VPN завершена"
