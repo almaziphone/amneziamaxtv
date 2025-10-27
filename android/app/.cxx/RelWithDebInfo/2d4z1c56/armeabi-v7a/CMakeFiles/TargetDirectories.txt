@@ -1,0 +1,2 @@
+E:/ProgJava/AmneziaMax/amneziamaxtv/android/app/.cxx/RelWithDebInfo/2d4z1c56/armeabi-v7a/CMakeFiles/edit_cache.dir
+E:/ProgJava/AmneziaMax/amneziamaxtv/android/app/.cxx/RelWithDebInfo/2d4z1c56/armeabi-v7a/CMakeFiles/rebuild_cache.dir

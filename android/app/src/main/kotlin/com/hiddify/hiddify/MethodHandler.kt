@@ -20,7 +20,7 @@ class MethodHandler(private val scope: CoroutineScope) : FlutterPlugin,
 
     companion object {
         const val TAG = "A/MethodHandler"
-        const val channelName = "com.hiddify.app/method"
+        const val channelName = "com.magnitvpn.app/method"
 
         enum class Trigger(val method: String) {
             Setup("setup"),
@@ -54,7 +54,10 @@ class MethodHandler(private val scope: CoroutineScope) : FlutterPlugin,
             Trigger.Setup.method -> {
                 GlobalScope.launch {
                     result.runCatching {
-                        Mobile.setup()
+                        val baseDir = Application.application.filesDir.path
+                        val workingDir = (Application.application.getExternalFilesDir(null) ?: Application.application.filesDir).path
+                        val tempDir = Application.application.cacheDir.path
+                        Mobile.setup(baseDir, workingDir, tempDir, false)
                         success("")
                     }
                 }

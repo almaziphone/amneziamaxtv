@@ -1,5 +1,5 @@
 name: hiddify
-description: Cross Platform Multi Protocol Proxy Frontend.
+description: MagnitVPNTV - Cross Platform Multi Protocol Proxy Frontend.
 publish_to: "none"
 version: 2.3.09+20310
 
@@ -80,7 +80,8 @@ dependencies:
   http: ^1.2.0
   timezone_to_country: ^2.1.0
   json_path: ^0.7.1
-  flutter_easy_permission: ^1.1.2
+  # flutter_easy_permission: ^1.1.2
+  permission_handler: ^11.0.0
   in_app_review: ^2.0.9
   circle_flags:
     git: https://github.com/hiddify-com/flutter_circle_flags.git
@@ -110,6 +111,7 @@ dev_dependencies:
 
 dependency_overrides:
   web: ^1.0.0
+  flutter_timezone: ^5.0.0
 
 flutter:
   uses-material-design: true

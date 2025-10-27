@@ -1,9 +1,9 @@
 display_name: VPN4§
-url: https://github.com/almaziphone/amneziamaxtv
+url: https://github.com/almaziphone/magnitvpntv
 license: Other
 
-packager: amneziamax
-packagerEmail: linux@amneziamax.com
+packager: MagnitVPN Team
+packagerEmail: linux@magnitvpn.com
 
 priority: optional
 section: x11
@@ -12,7 +12,7 @@ essential: false
 icon: ./assets/images/source/ic_launcher_border.png
 
 keywords:
-  - Hiddify
+  - MagnitVPNTV
   - Proxy
   - VPN
   - V2ray
@@ -21,7 +21,7 @@ keywords:
   - Psiphon
   - OpenVPN
 
-generic_name: Hiddify
+generic_name: MagnitVPNTV
 
 group: Applications/Internet
 

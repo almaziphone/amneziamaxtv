@@ -1,7 +1,7 @@
-display_name: amneziamax
-package_name: amneziamax
+display_name: MagnitVPNTV
+package_name: magnitvpntv
 maintainer:
-  name: amneziamax
+  name: MagnitVPN Team
   email: linux@vpn5tv.com
 
 priority: optional
@@ -11,12 +11,12 @@ essential: false
 icon: ./assets/images/source/ic_launcher_border.png
 
 postinstall_scripts:
-  - echo "Installed amneziamax"
+  - echo "Installed MagnitVPNTV"
 postuninstall_scripts:
   - echo "Surprised Why?"
 
 keywords:
-  - Hiddify
+  - MagnitVPNTV
   - Proxy
   - VPN
   - V2ray
@@ -25,7 +25,7 @@ keywords:
   - Psiphon
   - OpenVPN
 
-generic_name: Hiddify
+generic_name: MagnitVPNTV
 
 categories:
   - Network

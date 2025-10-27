@@ -9,7 +9,7 @@ import 'package:hiddify/core/localization/translations.dart';
 import 'package:hiddify/core/notification/in_app_notification_controller.dart';
 import 'package:hiddify/core/preferences/preferences_provider.dart';
 import 'package:hiddify/core/router/router.dart';
-import 'package:hiddify/features/common/qr_code_scanner_screen.dart';
+// import 'package:hiddify/features/common/qr_code_scanner_screen.dart';
 import 'package:hiddify/features/config_option/data/config_option_repository.dart';
 import 'package:hiddify/features/config_option/notifier/warp_option_notifier.dart';
 import 'package:hiddify/features/config_option/overview/warp_options_widgets.dart';
@@ -122,11 +122,14 @@ class AddProfileModal extends HookConsumerWidget {
                             icon: FluentIcons.qr_code_24_regular,
                             size: buttonWidth,
                             onTap: () async {
-                              final cr = await QRCodeScannerScreen().open(context);
-
-                              if (cr == null) return;
-                              if (addProfileState.isLoading) return;
-                              ref.read(addProfileProvider.notifier).add(cr);
+                              // QR scanner temporarily disabled
+                              // final cr = await QRCodeScannerScreen().open(context);
+                              // if (cr == null) return;
+                              // if (addProfileState.isLoading) return;
+                              // ref.read(addProfileProvider.notifier).add(cr);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('QR Scanner temporarily unavailable')),
+                              );
                             },
                           )
                         else

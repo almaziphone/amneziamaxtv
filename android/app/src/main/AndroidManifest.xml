@@ -28,7 +28,7 @@
         android:name=".Application"
         android:banner="@mipmap/tv_banner"
         android:icon="@mipmap/ic_launcher"
-        android:label="AmneziaMax"
+        android:label="MagnitVPNTV"
         android:roundIcon="@mipmap/ic_launcher"
         tools:targetApi="31">
 
@@ -74,9 +74,9 @@
                 <data android:scheme="clash" />
                 <data android:host="install-config" />
                 <data android:scheme="clashmeta" />
-                <data android:scheme="hiddify" />
+                <data android:scheme="magnitvpntv" />
                 <data android:host="install-sub" />
-                <data android:scheme="hiddify" />
+                <data android:scheme="magnitvpntv" />
                 <data android:host="import" />
             </intent-filter>
 
