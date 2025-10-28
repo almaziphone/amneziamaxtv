@@ -45,6 +45,10 @@ migrate_working_dir/
 /assets/core/*
 !/assets/core/.gitkeep
 
+# Temporary files
+temp_*.zip
+*.zip
+
 # Symbolication related
 app.*.symbols
 
